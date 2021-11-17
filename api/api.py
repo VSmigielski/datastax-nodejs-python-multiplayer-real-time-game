@@ -33,9 +33,11 @@ async def worldWSRoute(worldWS: WebSocket, client_id: str):
     try:
         # first we tell this client how the game-field looks like
         geomUpdate = makeGeometryUpdate(HALF_SIZE_X, HALF_SIZE_Y)
+        welcomeUser = makeWelcomeUpdate(client_id)
         # Note: this message is built here (i.e. no Pulsar involved)
         # and directly sent to a single client, the one who just connected:
         await worldWS.send_text(json.dumps(geomUpdate))
+        await worldWS.send_text(json.dumps(welcomeUser))
         while True:
             worldUpdateMsg = receiveOrNone(pulsarConsumer, RECEIVE_TIMEOUTS_MS)
             if worldUpdateMsg is not None:
